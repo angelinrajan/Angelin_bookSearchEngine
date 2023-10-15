@@ -4,8 +4,10 @@ const { signToken } = require('../utils/auth');
 const resolvers = {
   Query: {
     me: async (_, __, context) => {
+      console.log("ME",context.user)
       if (context.user) {
         const user = await User.findById(context.user._id).populate('savedBooks');
+        console.log(user, "this is user")
         return user;
       }
       throw new Error('You are not logged in.');
@@ -25,18 +27,21 @@ const resolvers = {
       }
 
       const token = signToken(user);
+
       return { token, user };
     },
     addUser: async (_, {username, email, password}) => {
       try {
         const user = await User.create({username, email, password});
         const token = signToken(user);
+
         return { token, user };
       } catch (error) {
         throw new Error('Error creating user: ' + error.message);
       }
     },
     saveBook: async (_, { book }, context) => {
+      console.log(context.user, "this is context savebook")
       if (context.user) {
         try {
           const updatedUser = await User.findOneAndUpdate(
@@ -44,6 +49,7 @@ const resolvers = {
             { $addToSet: { savedBooks: book } },
             { new: true, runValidators: true }
           );
+          console.log(updatedUser);
           return updatedUser;
         } catch (err) {
           console.error(err);
