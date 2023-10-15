@@ -1,5 +1,5 @@
-const { User } = require('./models');
-const { signToken } = require('./utils/auth');
+const { User } = require('../models');
+const { signToken } = require('../utils/auth');
 
 const resolvers = {
   Query: {
@@ -27,10 +27,14 @@ const resolvers = {
       const token = signToken(user);
       return { token, user };
     },
-    addUser: async (_, { username, email, password }) => {
-      const user = await User.create({ username, email, password });
-      const token = signToken(user);
-      return { token, user };
+    addUser: async (_, {username, email, password}) => {
+      try {
+        const user = await User.create({username, email, password});
+        const token = signToken(user);
+        return { token, user };
+      } catch (error) {
+        throw new Error('Error creating user: ' + error.message);
+      }
     },
     saveBook: async (_, { book }, context) => {
       if (context.user) {
