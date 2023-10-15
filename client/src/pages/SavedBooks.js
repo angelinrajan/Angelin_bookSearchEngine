@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect }from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 import {
   Container,
@@ -8,13 +8,14 @@ import {
   Col
 } from 'react-bootstrap';
 
-import { GET_ME, REMOVE_BOOK } from '../utils/queries';
+import { GET_ME} from '../utils/queries';
+import { REMOVE_BOOK } from '../utils/mutations';
 import Auth from '../utils/auth';
 import { removeBookId } from '../utils/localStorage';
 
 const SavedBooks = () => {
   const { loading, error, data } = useQuery(GET_ME);
-
+  const [deleteBook] = useMutation(REMOVE_BOOK);
   const [userData, setUserData] = useState({});
 
   useEffect(() => {
@@ -23,21 +24,29 @@ const SavedBooks = () => {
     }
   }, [data]);
 
-  const [removeBook] = useMutation(REMOVE_BOOK);
+  //const [removeBook] = useMutation(REMOVE_BOOK);
 
   const handleDeleteBook = async (bookId) => {
+    const token = Auth.loggedIn() ? Auth.getToken() : null;
+
+    if (!token) {
+      return false;
+    }
+
     try {
-      await removeBook({
-        variables: { bookId }
+      await deleteBook({
+        variables: {bookId: bookId},
+        update: cache => {
+          const data = cache.readQuery({ query: GET_ME });
+          const userDataCache = data.me;
+          const savedBooksCache = userDataCache.savedBooks;
+          const updatedBookCache = savedBooksCache.filter((book) => book.bookId !== bookId);
+          data.me.savedBooks = updatedBookCache;
+          cache.writeQuery({ query: GET_ME , data: {data: {...data.me.savedBooks}}})
+        }
       });
-
+      // upon success, remove book's id from localStorage
       removeBookId(bookId);
-
-      const updatedUser = {
-        ...userData,
-        savedBooks: userData.savedBooks.filter(book => book.bookId !== bookId)
-      };
-      setUserData(updatedUser);
     } catch (err) {
       console.error(err);
     }
