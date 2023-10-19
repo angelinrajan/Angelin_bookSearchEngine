@@ -50,7 +50,6 @@ export const REMOVE_BOOK = gql`
       _id
       username
       email
-      bookCount
       savedBooks {
         bookId
         authors
@@ -59,7 +58,6 @@ export const REMOVE_BOOK = gql`
         image
         link
       }
-      bookCount
     }
   }
 `;

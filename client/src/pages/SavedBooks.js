@@ -15,7 +15,7 @@ import { removeBookId } from '../utils/localStorage';
 
 const SavedBooks = () => {
   const { loading, error, data } = useQuery(GET_ME);
-  const [deleteBook] = useMutation(REMOVE_BOOK);
+  const [removeBook] = useMutation(REMOVE_BOOK);
   const [userData, setUserData] = useState({});
 
   useEffect(() => {
@@ -34,16 +34,16 @@ const SavedBooks = () => {
     }
 
     try {
-      await deleteBook({
+ await removeBook({
         variables: {bookId: bookId},
-        update: cache => {
-          const data = cache.readQuery({ query: GET_ME });
-          const userDataCache = data.me;
-          const savedBooksCache = userDataCache.savedBooks;
-          const updatedBookCache = savedBooksCache.filter((book) => book.bookId !== bookId);
-          data.me.savedBooks = updatedBookCache;
-          cache.writeQuery({ query: GET_ME , data: {data: {...data.me.savedBooks}}})
-        }
+        // update: cache => {
+        //   const data = cache.readQuery({ query: GET_ME });
+        //   const userDataCache = data.me;
+        //   const savedBooksCache = userDataCache.savedBooks;
+        //   const updatedBookCache = savedBooksCache.filter((book) => book.bookId !== bookId);
+        //   data.me.savedBooks = updatedBookCache;
+        //   cache.writeQuery({ query: GET_ME , data: {data: {...data.me.savedBooks}}})
+        // }
       });
       // upon success, remove book's id from localStorage
       removeBookId(bookId);
