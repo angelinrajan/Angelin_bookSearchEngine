@@ -1,10 +1,10 @@
 # Angelin_bookSearchEngine
 
-# Book Search Engine
 
 This web application is a Google Books search engine powered by GraphQL. It allows users to search for books, create accounts, save books, and manage their saved book list. Built using the MERN stack (MongoDB, Express.js, React, and Node.js) with the Apollo Server and GraphQL, it offers a performant and user-friendly experience for avid readers.
 
-
+## Deployed Websites URL from Heroku: 
+https://angelin-searchbookengine-3faa0e03e34e.herokuapp.com/
 
 ## Table of Contents
 
@@ -72,7 +72,7 @@ git push heroku main
 * Open the App: After a successful deployment, you can open your app in the browser using the Heroku app URL
 
 * Screenshot of deployed website: 
-
+![DeployedApplicationScreenshot](Angelin_SearchBookEngineDeployed.png)
 
 ### Outside resources: 
 * Tutoring
