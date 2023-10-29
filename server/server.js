@@ -74,7 +74,8 @@ const _dirname = path.dirname("");
 const buildPath = path.join(_dirname, "../client/build");
 app.use(express.static(buildPath));
 // if we're in production, serve client/build as static assets
-if (process.env.NODE_ENV === "production") {
+//if (process.env.NODE_ENV === "production") {
+  if (process.env.MONGODB_URI === "mongodb://127.0.0.1:27017/GoogleSearchBook") {
   app.use(express.static(path.join(__dirname, "../client/build")));
 }
 
